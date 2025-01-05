@@ -3,6 +3,7 @@
 \usepackage[includeheadfoot]{geometry} % For page dimensions
 \usepackage{fancyhdr}
 \usepackage{enumerate} % For custom lists
+\usepackage{tikz-cd}
 
 \fancyhf{}
 \lhead{Notes}
@@ -25,7 +26,9 @@
 \newcommand{\tor}{\text{ or }}
 \newcommand{\falg}{F^{\text{alg}}}
 \newcommand{\gal}{\text{Gal}}
+\newcommand{\mor}{\text{Mor}}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\im}{\text{Im}}
 \title{Notes for 2025}
 
 \begin{document}
@@ -57,10 +60,72 @@
         2 (k \otimes \ell) = 2 (k \otimes 25\ell) = 50 (k \otimes \ell) = 5 (10k \otimes \ell) = 5(0 \otimes \ell) = \mathbf{0}
     \end{align*}
 
+    \subsection{Localizations}
 
+    \emph{Definition - } \(S \subset R\) multiplicatively closed, then \(S^{-1}R\) has elements \(a/s\), where \(a_1/s_1 = a_2/s_2\) exactly when there exists some \(s \in S\), such that \(s(s_2a_1 - s_1a_2) = 0\)
+    We equip \(S^{-1}R\) withh the usual operations for fractions. This comes with the natural embedding
+    \begin{align*}
+        R \hookrightarrow S^{-1}R
+    \end{align*}
+
+    \emph{exercise - } \(R \hookrightarrow S^{-1}R\) is injective if and only if \(S\) does not contain zero divisors.
+
+    \emph{Proof - } Suppose that \(S\) contains zero divisor \(s\), then for some \(r \in R\), \(sr = 0\), hence \(r \mapsto r/1 = 0/1\) which is the image of zero. Conversely, assume \(S\) has no zero divisors, then for any \(s\),
+    \[s(a1 - r1) = 0 \iff a1 = r1 \iff a = \rho\]
+
+    \emph{Definition of Localization as a Universal Property -} \(S^{-1}R\) is initial among \(A\)-algebras \(B\), where \(S \hookrightarrow B^\times\) (Note an \(R\)-Algebra is just a ring containing \(R\) thats also an \(R\)-Module)
+    \begin{equation*}
+        \begin{tikzcd}
+            R \arrow[r, hook] \arrow[dr]
+            & S^{-1}R \arrow[d, dashed]
+            & S \to B^\times\\
+            & B
+        \end{tikzcd}
+    \end{equation*}
+
+    \emph{Definition of Localizations of Modules - } satisfies the same diagram as localizations of \(R\) (where we swap \(M\) for \(R\) and \(B\) for some arbitrary \(R\)-module \(N\)).
+    
+    \begin{itemize}
+        \item To show that a localization of an \(R\)-module exists we follow the exact same construction as for rings, but here we may relabel \(a \in R \leadsto m \in M\)
+    \end{itemize}
+
+    \emph{exercise - } Show that \(S^{-1}\left(\bigoplus_i M_i\right) = \bigoplus_i S^{-1}M_i\) but not necessarily for infinite direct products
+
+    Use the universal property. The explicit details of the proof are obvious (here we have \(1/s: a \mapsto b\), such that \(sb = a\)). To show it does not hold for direct products,
+    \begin{align*}
+        (1,1/2,1/3,\hdots) \in \prod_1^\infty \mathbf{Q} \setminus \mathbf{Q}\prod_1^\infty \mathbf{Z}
+    \end{align*}
+    Since any element of \(\mathbf{Q}\prod_1^\infty \mathbf{Z}\) has a "clearable denomenator"
+
+    \newpage
     \section{Category Theory}
+
+    \emph{General notes and thoughts - }
+    \begin{itemize}
+        \item Contravarience is naturally present in a pullback.
+    \end{itemize}
+
+    \emph{Categorical definition of a product -} Here \(P\) is the product of \(X,Y\), note that \(P\) is determined up to unique isomorphism.
+
+    \begin{equation*}
+        \begin{tikzcd}[row sep=1cm]
+            &A\arrow[ddl,"f_1"']\arrow[ddr,"f_2"]\arrow[d,dotted,"\bar{f}" description]\\
+            &P\arrow[dl,"p_1"]\arrow[dr,"p_2"']\\
+            X&&Y
+          \end{tikzcd}
+    \end{equation*}
+
+    \emph{Jargon - } A (covarient) functor is called faithful when for all \(A,B\), \(\mor(A,B) \to \mor(F(A),F(B))\) is injective, and full if it is surjective.
+    An example of a full subcategory (under the inclusion map) is finitely generated \(R\)-Modules as a subcategory of \(R\)-Modules.
 
     \emph{exercise - } Initial objects are universal. 
     
     \emph{proof.} Suppose that \(A, B\) are two initial objects. There exist unique maps between them, when com posed these are maps from the oobjects to themselves, any map from the object to itself must be the identity by uniqueness of maps into an initial object, hence isomorphic. Uniqueness of this isomorphism follows by definition of initial object. \emph{The proof to show final objects are universal is nearly identical}.
+
+    \emph{example - } Initial and final objects in \textbf{Set}, \textbf{Ring}, \textbf{Top}
+
+    \begin{itemize}
+        \item In \textbf{Set} and \textbf{Top} singletons are final.
+        \item In \textbf{Ring}, \(0\) is initial and final.
+    \end{itemize}
 \end{document}
