@@ -34,6 +34,93 @@
 \begin{document}
     \maketitle
 
+    \section{Algebraic Topology}
+    
+    \emph{exercise - } Show that \(\mathbf{h} = (h_i)\), \(h_i: C_i \to C_{i+1}'\), then \(h_{i-1}\circ d_i + d_{i+1}' \circ h_i\) is a chain map.
+
+    \emph{proof - } We need to check that \(d_i' \circ f_i = f_{i-1} \circ d_i\), in other words we need to show
+    \begin{align*}
+        d_i' \circ (h_{i-1}\circ d_i + d_{i+1}' \circ h_i) = (h_{i-2}\circ d_{i-1} + d_{i}' \circ h_{i-1})\circ d_i
+    \end{align*}
+    Since we are in a module, we can distribute \(d_i'\) on the left hand side, rewriting the condition as
+    \begin{align*}
+        d_i' \circ h_{i-1}\circ d_i + d_i' \circ d_{i+1}' \circ h_i = h_{i-2}\circ d_{i-1}\circ d_i + d_{i}' \circ h_{i-1}\circ d_i
+    \end{align*}
+    So it will suffice to show that
+    \begin{align*}
+        d_i' \circ d_{i+1}' \circ h_i = h_{i-2}\circ d_{i-1}\circ d_i
+    \end{align*}
+    But this is trivial since "\(d^2 = 0\)"
+    % This follows from our assumption of commutativity of \(h_i\)-s with \(d_j\)-s, i.e. the equivalence is given by the commutativity of the following diagram
+    % \begin{equation*}
+    %     \begin{tikzcd}
+    %         C_{i+1}\arrow[r] & C_{i} \arrow[r,"d_i"]\arrow[ld,"h_i"] &  C_{i-1} \arrow[r,"d_{i-1}"] &  C_{i-2} \arrow[ld,"h_{i-2}"]\\
+    %         C_{i+1}' \arrow[r,"d_{i+1}'"] & C_i' \arrow[r,"d_i"] & C_{i-1}' \arrow[r] & C_{i-2}'
+    %         \end{tikzcd}
+    % \end{equation*}
+
+    \emph{exercise - } A homotopy of chains is an equivalence relation
+
+    \emph{proof - } We will prove the following items: reflexivity, symmetry, transitivity
+    \begin{itemize}
+        \item To see that \(f \sim f\), take each to be the zero map, \(h_i = 0, \forall i\). In this case the diagram with maps given by \(\mathbf{h}\) is immediate.
+        \item Suppose that \(f \sim g\), then we have some \(\mathbf{h}\), such that \(g_i -f_i = h_{i-1}\circ d_i + d_{i+1}' \circ h_i\) for each \(i\). Since \(h_i\) are morphisms of modules, so are \(-h_i\), so in particular we have \(\mathbf{-h} := (-h_i)_i\), so that 
+        \begin{align*}
+            f_i - g_i &= -(g_i - f_i) = -(h_{i-1}\circ d_i + d_{i+1}' \circ h_i) = -h_{i-1}\circ d_i + -d_{i+1}' \circ h_i \\
+            &= -h_{i-1}\circ d_i + d_{i+1}' \circ -h_i
+        \end{align*}
+        The last line follows since \(d_{i+1}'\) is linear.
+        \item Suppose that \(f \sim g \sim r\), and let \(\mathbf{h, k}\) be respective witnesses of these homotopies. Then we have
+        \begin{align*}
+                &r_i - g_i = k_{i-1}\circ d_i + d_{i+1}'\circ k_i \\
+                &g_i - f_i = h_{i-1}\circ d_i + d_{i+1}'\circ h_i
+        \end{align*}
+        This furnishes
+        \begin{align*}
+            &r_i - f_i = k_{i-1}\circ d_i + d_{i+1}'\circ k_i + h_{i-1}\circ d_i + d_{i+1}'\circ h_i
+                       = (k_{i-1} + h_{i-1})\circ d_i + d_{i+1}'\circ(h_i + k_i)
+        \end{align*}
+        So we have the homotopy \(r \sim f\) via \(\mathbf{h} + \mathbf{k}\), we are done since we already proved symmetry.
+    \end{itemize}
+
+    \emph{exercise - } Represent diagrammatically what a homotopy of chain maps means
+
+    \emph{proof - } Here we want \(\mathbf{h}\), so that
+    \begin{align*}
+        \cdots TODO \cdots
+    \end{align*}
+
+    \emph{exercise - } Show that the following two chain complexes are homotopic:
+    \begin{equation*}
+        \begin{tikzcd}
+            0 \arrow[r] & \mathbf{Z} \oplus \mathbf{Z} \arrow[r,"{(\cdot , 2\cdot)}"] & \mathbf{Z} \oplus \mathbf{Z} \arrow[r] & 0 \oplus \mathbf{Z}/(2) \arrow[r] & 0 \\
+            0 \arrow[r] & \mathbf{Z} \arrow[r,"2\cdot"] & \mathbf{Z} \arrow[r] & \mathbf{Z}/(2) \arrow[r] & 0
+        \end{tikzcd}
+    \end{equation*}
+    
+    \emph{proof - } Let each \(f_i\) be the projection of the second coordinate, and each \(g_i\) the inclusion into the second coordinate. In thise case we have
+    \begin{align*}
+        \mathbf{1}_{C'} - \mathbf{fg} = \mathbf{0}
+    \end{align*}
+    and hence \(\mathbf{h} = (0)_i\) witnesses the homotopy. The slightly harder case is the other direction. Define \(h_2 = h_0 = h_{-1} = 0\), and \(h_1: (m,n) \mapsto m\). By definition of \(\mathbf{f}, \mathbf{g}\), we have \(1_{C,i} - g_if_i: (m,n) \mapsto (m,0)\), so we just need to check that our given \(\mathbf{h}\) satisfies this.
+    \begin{align*}
+        &(d_3h_2 + h_1d_2)(m,n) = 0 + h_1(m,2n) = (m,0) \\
+        &(d_2h_1 + h_0d_1)(m,n) = d_2(m,0) + 0 = (m,0) \\
+        &(d_1h_0 + h_{-1}d_0)(0,n) = 0 + 0 = (0,0)
+    \end{align*}
+    This verifies the homotopy.
+
+    \textbf{CAUTION!! - } The connection (this is what we call the diagonal maps often denoted \(\mathbf{h}\)) diagram need to not commute.
+
+    \textbf{Theorem - } If chain complexes \(C,C'\) are homotopic, then they have the same Homology Modules.
+
+    \emph{proof - } Recall that
+    \begin{align*}
+        H^i := \frac{\ker(d_i)}{\im(d_{i+1})}
+    \end{align*}
+    Now let the homotopy be given by \(\mathbf{f}:C \to C', \mathbf{g}:C' \to C\), there is a natural induced map of \(f_i\) on \(H^i\), given by restricting \(f_i\) to \(\im(d_{i+1})\), then taking the unique map from the quotient by the kernel of \(d_i\), which exists and is unique by the first isomorphism theorem. Calling this induced map \(f_{i,*}\), we need to check that
+    \(f_{i,*}\) maps into \(H_i'\).
+
     \section{Commutative Algebra}
 
     \textbf{Hilbert's Basis Theorem - } if \(R\) is Noetherian, then \(R[X]\) is Noetherian
@@ -51,6 +138,11 @@
     This motivates the clever choice of ideal of leading coefficients since we want to reduce the degree.}
 
     \subsection{Tensor Products}
+
+    \emph{Notes - }
+    \begin{itemize}
+        \item \((\cdot) \otimes N: \textbf{Mod}_\mathbf{R} \to \textbf{Mod}_\mathbf{R}\) is a right exact covarient functor.
+    \end{itemize}
 
     \emph{exercise - } \(\mathbf{Z}/(10)\otimes \mathbf{Z}/(12) \simeq \mathbf{Z}/(2)\)
 
@@ -103,6 +195,10 @@
     \emph{General notes and thoughts - }
     \begin{itemize}
         \item Contravarience is naturally present in a pullback.
+        \item A functor is right exact when for 
+        \[M' \to M \to M'' \to 0\]
+        an exact sequence (i.e. \(M'\) maps into the kernel of \(M \to M''\), \(M\) maps onto \(M''\)), then the sequence of induced maps is exact
+        \[F(M') \to F(M) \to F(M'') \to 0\]
     \end{itemize}
 
     \emph{Categorical definition of a product -} Here \(P\) is the product of \(X,Y\), note that \(P\) is determined up to unique isomorphism.
@@ -128,4 +224,18 @@
         \item In \textbf{Set} and \textbf{Top} singletons are final.
         \item In \textbf{Ring}, \(0\) is initial and final.
     \end{itemize}
+
+    \emph{Definition of fibered product - } The following is the definition of the fibered product \((P,h,g) = X \times_Z Y\)
+    \begin{equation*}
+        \begin{tikzcd}
+            Q
+            \arrow[bend left]{drr}{q_2}
+            \arrow[bend right,swap]{ddr}{q_1}
+            \arrow[dashed]{dr}[description]{\exists ! f} & & \\
+            & P \arrow{r}{p_2} \arrow{d}[swap]{p_1}
+            & Y \arrow{d}{g} \\
+            & X \arrow[swap]{r}{h}
+            & Z
+            \end{tikzcd}
+    \end{equation*}
 \end{document}
