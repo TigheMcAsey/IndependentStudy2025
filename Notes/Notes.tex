@@ -137,6 +137,40 @@
     \emph{It is easy to understand how someone could come up with this proof when we do it by first noticing that \(J \cap \set{\deg \leq m}\) is always finitely generated.
     This motivates the clever choice of ideal of leading coefficients since we want to reduce the degree.}
 
+    \emph{exercise - } Prove that if \(R\) is Noetherian, and \(I \subset R\) is an ideal, then among the primes of \(R\) containing \(I\) there are only finitely many that are minimal with respect to inclusion.
+
+    \emph{proof - } Assume not, then let 
+    \[X = \set{I \subset R \mid \text{there are infinitely many minimal prime ideals containing } I}\]
+    any chain in \(X\) has a maximal element by the Noetherian assumption, so Zorn's lemma furnishes a maximal element \(J\). \(J \in X\) implies that \(J\) is not prime, since then it would be the unique minimal ideal, hence there exist \(f,g \not \in J\) such that \(fg \in J\), it follows that for any minimal prime ideal \(P\) containing \(J\), we have \(fg \in P \implies f \in P \tor g \in P\), so that \(P \in J + (f) \tor J + (g)\), hence one of the two must be contained in infinitely many minimal prime ideals contradicting minimality. \qed
+
+    \emph{exercise - }  Let \(M'\) be a submodule of \(M\). Show that \(M\) is Noetherian
+    iff both \(M'\) and \(M / M'\) are Noetherian.
+
+    \emph{proof - } If \(M\) is Noetherian, then so is \(M/M'\), since the image of the generators are generators. \(M'\) being Noetherian is just by passing chains in \(M'\) to the same chains in \(M\). Now suppose the converse, now let \(N_1 \subset N_2 \subset \cdots\) be a chain of submodules of \(M\), then there is some \(k'\), such that for all \(k \geq k'\) we have \(N_{k+1}/M' = N_k/M'\) and \(N_{k+1}\cap M' = N_k\cap M'\). Then let \(x \in N_{k+1}\), then there is some \(y \in N_k\) such that \(x-y \in M'\), hence
+    \[x - y =m \in M' \implies m \in (N_{k+1} + N_k)\cap M' = N_{k+1} \cap M' = N_k \cap M'\]
+    so \(x = y + m \in N_k\), hence \(N_{k+1} = N_k\). \qed
+
+    \emph{exercise - } Let \(R = R_0 \oplus R_1 \oplus \cdots\) be graded, TFAE.
+    \begin{enumerate}
+        \item \(R\) is Noetherian
+        \item \(R_0\) is Noetherian and \(R_1 \oplus R_2 \oplus \cdots\) is finitely generated
+        \item \(R_0\) is Noetherian and \(R\) is finitely generated as a \(k\)-algebra
+    \end{enumerate}
+
+    \emph{proof - } 1 implies 2 is obvious. To show 3 implies 1, we have from Hilberts basis theorem \(R_0[x_1,\hdots,x_n]\) is Noetherian, since a finite \(R_0\)-algebra is a quotient of this free algebra, and quotients of Noetherian modules are Noetherian we are done. For 2 implies 3, let \(\set{f_i}_1^N\) be generators for \(R_1 \oplus R_2 \oplus \cdots\), then for \(f \in R\), \(f = \sum g_i f_i\), \(g_i\) in grading of \(\text{grad} f - \text{grad} f_i\) , recursing this process on \(g_i\), we eventually get "coefficients" with degree \(0\), so the module generators are also \(R_0\) algebra generators. \qed
+
+    \emph{exercise - } Let \(R = k[x]\) show that every finitely generated \(R\)-module has a finite free resolution.
+
+    \emph{proof - } Use the structure theorem
+    \begin{equation*}
+        \begin{tikzcd}
+        0 \arrow[r] &k[x]^N \arrow[r] &k[x]^{r+N} \arrow[r]&  k[x]^r \bigoplus_1^N k[x]/p_i(x) \arrow[r] &0
+        \end{tikzcd}
+    \end{equation*}
+
+    \emph{exercise - } Let \(R = k[x]/(x^n)\), compute a free resolution of the \(R\)-module \(R/(x^m)\), for any \(m \leq n\). Show that the only \(R\)-modules with finite
+    free resolutions are the free modules. 
+
     \subsection{Tensor Products}
 
     \emph{Notes - }
