@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1741647678.11788 "/Users/tighe/School:Work/IndependentStudy2025/Math Circle PSET/MathCircleMarch10.tex" "MathCircleMarch10.pdf" "MathCircleMarch10" 1741647678.56937 0
-  "/Users/tighe/School:Work/IndependentStudy2025/Math Circle PSET/MathCircleMarch10.tex" 1741647677.91105 7208 8f7f62230d02c91064dda74f4f529b49 ""
+["pdflatex"] 1741713893.5251 "/Users/tighe/School:Work/IndependentStudy2025/Math Circle PSET/MathCircleMarch10.tex" "MathCircleMarch10.pdf" "MathCircleMarch10" 1741713894.03536 0
+  "/Users/tighe/School:Work/IndependentStudy2025/Math Circle PSET/MathCircleMarch10.tex" 1741713893.31411 7212 789dab2d3ceec57f06a495bb34f74e1d ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -139,8 +139,8 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1739668623.84621 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1739668619 8221421 65c51ee59c8e6121ca7ef37059414766 ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "MathCircleMarch10.aux" 1741647678.52304 32 044b7f8fc9779af7531264e0c5c84b6d "pdflatex"
-  "MathCircleMarch10.tex" 1741647677.91105 7208 8f7f62230d02c91064dda74f4f529b49 ""
+  "MathCircleMarch10.aux" 1741713893.98531 32 044b7f8fc9779af7531264e0c5c84b6d "pdflatex"
+  "MathCircleMarch10.tex" 1741713893.31411 7212 789dab2d3ceec57f06a495bb34f74e1d ""
   (generated)
   "MathCircleMarch10.aux"
   "MathCircleMarch10.log"
