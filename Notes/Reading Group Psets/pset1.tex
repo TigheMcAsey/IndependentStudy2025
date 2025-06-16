@@ -1,0 +1,140 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsfonts, amssymb,amsthm}
+\usepackage[includeheadfoot]{geometry} % For page dimensions
+\usepackage{fancyhdr}
+\usepackage{enumerate} % For custom lists
+\usepackage{tikz-cd}
+\usepackage{times}
+\usepackage{hyperref}
+
+\fancyhf{}
+\lhead{GH Reading Group Pset1}
+\rhead{Tighe McAsey}
+\pagestyle{fancy}
+
+% Page dimensions
+\geometry{a4paper, margin=1in}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem*{rmk}{Remark}
+\newtheorem*{rmks}{Remarks}
+\newtheorem{eg}{Example}
+\newtheorem{exe}{Exercise}
+\newtheorem{pb}{Problem}
+
+% Commands:
+
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lvert\lvert#1\rvert\rvert}
+\newcommand{\gen}[1]{\left\langle #1 \right\rangle}
+\newcommand{\tand}{\text{ and }}
+\newcommand{\tor}{\text{ or }}
+\newcommand{\falg}{F^{\text{alg}}}
+\newcommand{\gal}{\text{Gal}}
+\newcommand{\mor}{\text{Mor}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\coker}{\text{coker}}
+\newcommand{\im}{\text{Im}}
+\newcommand{\homo}{\text{Hom}}
+\newcommand{\invlim}{\lim\limits_{\longleftarrow}}
+
+\begin{document}
+    \begin{pb}
+        \textbf{(a)} \emph{Suppose \(f,g: \mathbb{C}^m \to \mathbb{C}\) are holomorphic, and for some open subset \(V \subset \mathbb{C}^n\) we have \(f\vert_V = g\vert_V\), show that \(f = g\).}
+        
+        \begin{proof}
+            The Weierstrass theorem can be interpreted as non-zero holomorphic functions (in one variable) having isolated zeros, thus the result is already proved in \(1\) dimension and we can proceed by induction. define \(h = f-g\), and consider \(h\) as a functions of \((\mathbf{u},z)\) where \(\mathbf{u} \in \mathbb{C}^n\), we consider an arbitrary point \((\mathbf{u_0},z_0) \in \mathbb{C}^{n+1}\). fixing \((\mathbf{u'},z') \in V\) we have that \(h(\mathbf{u'},z) \equiv 0\) on \(\mathbb{C}\) so in particular \((\mathbf{u'},z_0) = 0\) by the Weierstrass theorem, there is some open neighborhood of this point \(U \subset V\), and by the same logic for each \((\mathbf{u},z') \in U\) we have \(h(\mathbf{u},z_0) = 0\). Thus fixing \(z = z_0\) we have that \(h(\mathbf{u},z_0)\) is locally zero on \(\mathbb{C}^n\), so by inductive hypothesis it is globaly zero and \(h(\mathbf{u_0},z_0) = 0\).
+        \end{proof}
+
+        \textbf{(b)} \emph{Prove the Maximum Modulus Principle.}
+        
+        \begin{proof}
+            Consider any closed curve \(\gamma\) containing \(z_0\) with \(\gamma \subset U\). It follows that \(\abs{f(z_0)} \geq \abs{f(z)}\) on all of \(\gamma\). Then since \(\abs{f(z_0)}\) is constant it is holomorphic, so that
+            \begin{align*}
+                0 \leq \int_\gamma \abs{f(z_0)} - \abs{f(z)} = \int_\gamma \abs{f(z_0)} - \int_\gamma \abs{f(z)} \overset{\text{Cauchy's Thm.}}{=} \int_\gamma - \abs{f(z)} \leq 0
+            \end{align*}
+            For any point \(w \in U\), there is a closed curve \(\gamma \subset U\) passing through \(w\), if \(\abs{f(w)} < \abs{f(z)}\), then the above integral would be positive.
+        \end{proof}
+
+        \textbf{(c)} \emph{Prove elliptic regularity, i.e. complex differentiable implies smooth.}
+
+        \begin{proof}
+            It will suffice to show that holomorphic functions are equal to their power series, let \(z_0\) be in our domain, and \(\gamma\) be a circle of radius \(r\) about \(p\) in our domain (with \(z_0\) in the interior of \(gamma\)), then by Cauchy's integral formula:
+            \begin{align*}
+                f(z_0) &= \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-z_0}dz = \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \frac{z-p}{z-p - (z_0 - p)}dz = \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \frac{1}{1 - \frac{z_0-p}{z-p}}dz \\
+                &= \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \sum_0^\infty \left(\frac{z_0-p}{z-p}\right)^n = \frac{1}{2\pi i}\int_{\gamma}\sum_0^\infty \frac{f(z)}{(z-p)^{n+1}}(z_0-p)^n
+            \end{align*}
+            Since \(f\) is continuous and \(\gamma\) is compact, we have that \(\sup_\gamma\abs{f} = M\), and it is immediate that \(\abs{z_0 - p} < r = \abs{z - p}\) for all \(z \in \gamma\). In particular this implies that the sum of functions is abslutely convergent. Swapping the sum and integral gives us
+            \begin{align*}
+                f(z_0) = \frac{1}{2\pi i} \sum_0^\infty (z - p)^n \int_\gamma \frac{f(z)}{(z - p)^{n+1}}dz
+            \end{align*}
+        \end{proof}
+        \begin{rmks}\; \newline
+            \begin{itemize}
+                \item \emph{In (a) the proof technique is familiar to me, it can be used to prove topological properties of varieties. e.g. cartesian products of infinite sets are dense in \(\mathbb{A}^n\).}
+                \item \emph{(c) is just copying the methods of proof in GH, the algebra is explicated and uniform convergence, although obvious, is explained more carefully.}
+            \end{itemize}
+        \end{rmks}
+    \end{pb}
+    \begin{pb}
+        \emph{Let \(f(z,w) = \sin(w^2) - z\), find the Weierstrass polynomial \(g\), such that \(f = gh\)}
+
+        \begin{proof}
+            Follow the process of the proof of the Weierstrass preparation theorem, in which case we find that \(b_1 = \sqrt{\arcsin(z)}, b_2 = -\sqrt{\arcsin(z)}\). This implies that \(g = w^2 - \arcsin(z)\), here we choose the branch of \(\arcsin\) with \(0 \mapsto 0\). Now we can once again take \(h\) as in the proof of the theorem, so that
+            \begin{align*}
+                h(0,0) = \frac{1}{2\pi i}\int_\gamma \frac{\sin(t^2) - 0}{t^2 - \arcsin(0)}\frac{1}{t}dt = \frac{1}{2\pi i}\int_\gamma \frac{\sin(t^2)}{t^3}dt \overset{\text{Laurent Series + res. Thm}}{=} 1 \neq 0
+            \end{align*}
+        \end{proof}
+
+        \textbf{Remarks.}
+        \begin{itemize}
+            \item Away from \(\sin(w^2) = z\) we have \(h(z,w) = \frac{\sin(w^2) - z}{w^2 - \arcsin(z)}\), at \(\sin(w^2) = z\), we need to be more careful and compute \(h(z,w)\) from the definition \(h(z,w) = \frac{1}{2\pi i}\int_\gamma\frac{\sin(t^2) - z}{t^2 - \arcsin(z)}\frac{1}{t-w}dt\) as above.
+            \item Near \(0\), we have that \(\arctan(z)\) satisfies the differential equation \(\frac{d}{dz}\phi(z) = \frac{1}{\sqrt{1 + z^2}}\), so we can define it as \(\int_0^z \frac{1}{\sqrt{1 + t^2}}dt\), this is clearly holomorphic near zero and \(\arcsin(z) = \arctan(\frac{z}{\sqrt{1 - z^2}})\) is also holomorphic near zero. Alternatively, we know that \(\arcsin\) exists and is holomorphic by the \emph{Holomorphic inverse function theorem}.
+        \end{itemize}
+    \end{pb}
+    \begin{pb}
+        \emph{Find \(\tau\), such that for \(\Lambda = \mathbb{Z}\oplus i\tau \mathbb{Z}\) we have \(C^\times/z\sim 2z \cong \mathbb{C}/\Lambda\) as complex manifolds.}
+
+        \begin{proof}
+            It is intuitive that the equivalence relation on \(\mathbb{C}^\times\) defines a torus, chasing the image through the complex logarithm will be sufficient to describe which torus. The following general observation is useful
+
+            \begin{itemize}
+                \item Let \(G\) be a group of \emph{biholomorphic} maps acting on a complex manifold \(M\) (totally discontinuous, free, etc.) suppose \((U_\alpha,\phi_\alpha)_\alpha\) is an atlas for \(M\) where the quotient map \(\pi\) is injective (it is straightforward that this always exists), then \((\pi(U_\alpha),\phi_\alpha\circ \pi\vert_{U_\alpha}^{-1})_\alpha\) is an atlas for \(M/G\) (in practice we can remove many sets from this atlas).
+            \end{itemize}
+
+            It is clear that multiplication by \(2^k\) is holomorphic (a diffeomorphism) on \(C^\times\), so it is easy to define charts on the quotient. I claim that \(\tau = \frac{2\pi}{\log 2}\). Since multiplication by a constant is holomorphic, it suffices to show that \(\mathbb{C}^\times/z\sim 2z \cong \mathbb{C}/\log2\mathbb{Z}\oplus 2\pi i \mathbb{Z}\). Taking \(z \mapsto \log\abs{z} + i\arg z\) it is obvious that this map defines a homeomorphism. We have charts on \(\mathbb{C}^\times\) being 
+            \begin{align*}
+                &U_1 = \left(\mathbb{C}^\times \setminus \set{\arg z = 0}\right) \cap \set{1 < \abs{z} < 2} \\ &U_2 = \left(\mathbb{C}^\times \setminus \set{\arg z = 0}\right) \cap \set{3/4 < \abs{z} < 3/2} \\ &U_3 = \left(\mathbb{C}^\times \setminus \set{\arg z = \pi}\right)\cap\set{1 < \abs{z} < 2} \\ &U_4 = \left(\mathbb{C}^\times \setminus\set{\arg z = \pi}\right)\cap \set{3/4 < \abs{z} < 3/2}
+            \end{align*} and the inclusion into \(\mathbb{C}\) as \(\phi_i\). Now the above note gives a simple definition of charts on \(\mathbb{C}^\times/z \sim 2z\). We can also use the standard charts on the Torus.
+
+            Now the charts on our quotient manifold, as well as the complex torus given by \(\tau\) are nicely symmetric, as such we can check on a single chart. Locally on \(U_1, V_1\) the maps are the complex logarithm away from its branch cut, and inversely the complex exponential, both are holomorphic.
+        \end{proof}
+        
+        \textbf{Remarks.}
+        \begin{itemize}
+            \item Not all complex tori are biholomorphic
+            \item Note that a biholomorphic map \(\mathbb{C}/\Lambda_1 \to \mathbb{C}/\Lambda_2\) induces a biholomorphic map of their universal covering spaces, i.e. \(\mathbb{C} \to \mathbb{C}\) with \(\Lambda_1 \to \Lambda_2\)
+            \item All biholomorphic maps \(\mathbb{C} \to \mathbb{C}\) are affine
+            \item Thus \(\Lambda_1 \tand \Lambda_2\) must be related via an affine transformation \(z \mapsto az + b\), shifting by \(b\) we require that \(\Lambda_1 = a \Lambda_2\) for a complex scalar.
+        \end{itemize}
+        
+    \end{pb}
+    \begin{pb} \emph{Show that \(\mathbb{CP}^n\) is a complex manifold, describe the transition functions.}
+        \begin{proof}
+            The charts are given by \(U_i = \set{z_i \neq 0}\) and \(\varphi_i: \mathbf{z} \mapsto (\frac{z_0}{z_i},\hdots,\hat{\frac{z_i}{z_i}},\hdots,\frac{z_n}{z_i})\). The coordinate change is given by \(\varphi_{ij}\) being multiplication by \(z_j/z_i\), note that although we cannot recover the original coordinates, this ratio is available from the local information.
+        \end{proof}
+        \emph{Do the same for the tautological line bundle}
+        \begin{proof}
+            Here the charts and coordinate changes are nearly the same, but we pair each \(U_i\) with a copy of \(\mathbb{C}^{n+1}\), and a trivialization \(\lambda\), representing \(\lambda \overline{z}\), thus the coordinate change on \(\lambda\) is given by multiplication by \(\frac{x_i}{x_j}\) as well.
+        \end{proof}
+
+        \textbf{Remark.}
+        \begin{itemize}
+            \item The sections of the tautological bundle can be identified with the space of \(-1\) degree homogenous polynomials in \(n+1\) variables, hence can be written as \(\mathcal{O}(-1)\). This also refects that there are no global sections on the tautological line bundle.
+        \end{itemize}
+    \end{pb}
+\end{document}

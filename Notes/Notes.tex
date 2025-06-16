@@ -4,6 +4,8 @@
 \usepackage{fancyhdr}
 \usepackage{enumerate} % For custom lists
 \usepackage{tikz-cd}
+\usepackage{times}
+\usepackage{hyperref}
 
 \fancyhf{}
 \lhead{Notes}
@@ -14,7 +16,12 @@
 \geometry{a4paper, margin=1in}
 
 \theoremstyle{definition}
-\newtheorem{pb}{}
+\newtheorem{defn}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem*{rmk}{Remark}
+\newtheorem{eg}{Example}
+\newtheorem{exe}{Exercise}
 
 % Commands:
 
@@ -28,248 +35,535 @@
 \newcommand{\gal}{\text{Gal}}
 \newcommand{\mor}{\text{Mor}}
 \newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\coker}{\text{coker}}
 \newcommand{\im}{\text{Im}}
+\newcommand{\homo}{\text{Hom}}
+\newcommand{\invlim}{\lim\limits_{\longleftarrow}}
 \title{Notes for 2025}
 
 \begin{document}
     \maketitle
+    \newpage
 
-    \section{Algebraic Topology}
+    \section{Homological Algebra}
+
+    \subsection{Basic Tools}
+
+    \begin{defn}\label{cone}
+        For \(f: \mathbf{B} \to \mathbf{C}\), a map of cell complexes, the mapping cone of \(f\) is the cell complex following cell complex:
+        \begin{equation*}
+            \begin{tikzcd}
+                \cdots B_{n+1}\oplus C_{n+2} \arrow[r,"{\begin{bmatrix} -d_B \;\; 0 \\ -f \;\;\; d_C \end{bmatrix}}"] & B_n \oplus C_{n+1} \arrow[r,"{\begin{bmatrix} -d_B \;\; 0 \\ -f \;\;\; d_C \end{bmatrix}}"] & B_{n-1} \oplus C_n \cdots
+            \end{tikzcd}
+        \end{equation*}
+    \end{defn}
+
+    \begin{thm}\label{cone exact}
+        A chain map \(f: \mathbf{B} \to \mathbf{C}\) is a quasi-isomorphism exactly when \(\text{C}(f)\) is exact.
+    \end{thm}
+    \begin{proof}
+        There is a natural short exact sequence of chain complexes
+        \begin{equation*}
+            \begin{tikzcd}
+                0 \arrow[r,"{}"] &\mathbf{C} \arrow[r,"{}"] &\text{C}(f) \arrow[r,"{}"] &\mathbf{B}[-1] \arrow[r,"{}"] &0
+            \end{tikzcd}
+        \end{equation*}
+        Hence we get a long exact sequence on homology with differential \(f_*\), explicitly this LES looks like
+        \begin{equation*}
+            \begin{tikzcd}
+                \cdots H_{n+1}(\text{C}(f)) \arrow[r,"{}"] &H_{n}(B) \arrow[r,"{f_*}"] &H_n(C) \arrow[r,"{}"] &H_n(\text{C}(f))\cdots
+            \end{tikzcd}
+        \end{equation*}
+    \end{proof}
+
+    \subsection{Abelian Categories}
+
+    \begin{defn}
+        A category \(\mathcal{C}\) is called additive when
+        \begin{enumerate}
+            \item Each Hom set in \(\mathcal{C}\) has an abelian group structure with composition distributing naturally over addition.
+            \item \(\mathcal{C}\) has a zero (initial and terminal) object.
+            \item \(\mathcal{C}\) has products.
+        \end{enumerate}
+    \end{defn}
+    \begin{defn}
+        We expand the definitions of kernel, cokernel, mono and epi to abelian categories. Let \(f: C \to D\) be a map in \(\mathcal{C}\), then
+        \begin{itemize}
+            \item \(\iota\) is the \textbf{kernel} of \(f\) when for any \(j\) such that \(fj = 0\) we have that \(j\) factors through \(\iota\).
+            \item \(q\) is the \textbf{cokernel} of \(f\) when for any \(s\), such that \(sf = 0\) we have that \(s\) factors through \(q\).
+            \item \(f\) is an \textbf{epi} when for any \(s: D \to D\), \(qf = 0\) implies \(q = 0\).
+            \item \(f\) is a \textbf{mono} when for any \(j: C \to C\), \(fj = 0\) implies \(j = 0\).
+        \end{itemize}
+    \end{defn}
+    \begin{defn}
+        A category \(\mathcal{C}\) is called abelian when
+        \begin{enumerate}
+            \item Every map in \(\mathcal{C}\) has a cokernel and a kernel.
+            \item Every monic in \(\mathcal{C}\) is the kernel of its cokernel.
+            \item Every epi in \(\mathcal{C}\) is the cokernel of its kernel.
+        \end{enumerate}
+    \end{defn}
+    \begin{defn}
+        A subcategory \(\mathcal{C} \subset \mathcal{A}\) is called an \textbf{exact subcategory} when any exact sequence in \(\mathcal{C}\) is exact in \(\mathcal{A}\).
+    \end{defn}
+    \begin{defn}
+        Let \(\mathcal{C}\) be an abelian category and \(X\) a topological space with \(\mathcal{I}\) is its poset of open sets (ordered by inclusion), then a \textbf{pre-sheaf} on \(X\) is a contravarient functor \(\mathcal{F}\) from \(\mathcal{I}\) to \(\mathcal{C}\) with \(\mathcal{F}(\emptyset) = \set{0}\).
+    \end{defn}
+    \begin{defn}
+        Let the objects be defined as in a presheaf, a sheaf on \(X\) is a presheaf \(\mathcal{F}\), satisfying if \(\set{U_j}_J\) is an open cover for \(U \subset X\) open and \(\set{f_j \mid f_j \in \mathcal{F}(U_j)}_J\) is such that \(f_i = f_j\) on \(U_i \cap U_j\) for any \(i,j\), then there is a unique \(f \in \mathcal{F}(U)\) such that \(f\vert_{U_j} = f_j\) for all \(j\).
+    \end{defn}
+    \begin{prop}\label{prop1.2.1}
+    If \(\mathcal{C} \subset \mathcal{A}\) is a full subcategory (\(\mathcal{A}\) abelian), then \(\mathcal{C}\) is additive iff \(0 \in \mathcal{C}\) and \(\mathcal{C}\) is closed wrt. \(\oplus\).
+    \end{prop}
+    \begin{prop}
+        \(\mathcal{C} \tand \mathcal{A}\) as in \hyperref[prop1.2.1]{Proposition 1}, then \(\mathcal{C}\) is abelian and \(\mathcal{C}\) is an exact subcategory iff \(\mathcal{C}\) is closed under \(\ker\) and \(\coker\).
+    \end{prop}
+    \begin{prop}
+        The inclusion of Sheaves into Pre-Sheaves is left exact.
+    \end{prop}
     
-    \emph{exercise - } Show that \(\mathbf{h} = (h_i)\), \(h_i: C_i \to C_{i+1}'\), then \(h_{i-1}\circ d_i + d_{i+1}' \circ h_i\) is a chain map.
-
-    \emph{proof - } We need to check that \(d_i' \circ f_i = f_{i-1} \circ d_i\), in other words we need to show
-    \begin{align*}
-        d_i' \circ (h_{i-1}\circ d_i + d_{i+1}' \circ h_i) = (h_{i-2}\circ d_{i-1} + d_{i}' \circ h_{i-1})\circ d_i
-    \end{align*}
-    Since we are in a module, we can distribute \(d_i'\) on the left hand side, rewriting the condition as
-    \begin{align*}
-        d_i' \circ h_{i-1}\circ d_i + d_i' \circ d_{i+1}' \circ h_i = h_{i-2}\circ d_{i-1}\circ d_i + d_{i}' \circ h_{i-1}\circ d_i
-    \end{align*}
-    So it will suffice to show that
-    \begin{align*}
-        d_i' \circ d_{i+1}' \circ h_i = h_{i-2}\circ d_{i-1}\circ d_i
-    \end{align*}
-    But this is trivial since "\(d^2 = 0\)"
-    % This follows from our assumption of commutativity of \(h_i\)-s with \(d_j\)-s, i.e. the equivalence is given by the commutativity of the following diagram
-    % \begin{equation*}
-    %     \begin{tikzcd}
-    %         C_{i+1}\arrow[r] & C_{i} \arrow[r,"d_i"]\arrow[ld,"h_i"] &  C_{i-1} \arrow[r,"d_{i-1}"] &  C_{i-2} \arrow[ld,"h_{i-2}"]\\
-    %         C_{i+1}' \arrow[r,"d_{i+1}'"] & C_i' \arrow[r,"d_i"] & C_{i-1}' \arrow[r] & C_{i-2}'
-    %         \end{tikzcd}
-    % \end{equation*}
-
-    \emph{exercise - } A homotopy of chains is an equivalence relation
-
-    \emph{proof - } We will prove the following items: reflexivity, symmetry, transitivity
-    \begin{itemize}
-        \item To see that \(f \sim f\), take each to be the zero map, \(h_i = 0, \forall i\). In this case the diagram with maps given by \(\mathbf{h}\) is immediate.
-        \item Suppose that \(f \sim g\), then we have some \(\mathbf{h}\), such that \(g_i -f_i = h_{i-1}\circ d_i + d_{i+1}' \circ h_i\) for each \(i\). Since \(h_i\) are morphisms of modules, so are \(-h_i\), so in particular we have \(\mathbf{-h} := (-h_i)_i\), so that 
+    \begin{thm}
+        Every additive category \(\mathcal{A}\) can be embedded into an abelian category via the \textbf{Yoneda Embedding}.
+    \end{thm}
+    \begin{proof}
+        The functor giving the Yoneda embedding is \(\mathcal{F}: A \to \homo(-,A)\). Left exactness of \(\mathcal{F}\) follows from left exactness of \(\homo(M,-)\). 
+    \end{proof}
+    \begin{rmk}\label{yoneda rmk}
+        \textbf{(Important)} If \(\mathcal{A}\) is abelian, then the Yoneda embedding is into an abelian subcategory (the category of \emph{left exact} contravarient functors from \(\mathcal{A}\) to \(\textbf{abgp}\))
+    \end{rmk}
+    \begin{thm}
+        \textbf{Yoneda Lemma.}
+        If for each \(M\) in an additive category \(\mathcal{C}\) we have exactness of
+        \begin{equation*}
+            \begin{tikzcd}
+                \homo(M,A) \arrow[r,"{f^*}"] &\homo(M,B) \arrow[r,"{g^*}"] &\homo(M,C)
+            \end{tikzcd}
+        \end{equation*}
+        Then the original sequence
+        \begin{equation*}
+            \begin{tikzcd}
+                A \arrow[r,"{f}"] &B \arrow[r,"{g}"] &C
+            \end{tikzcd}
+        \end{equation*}
+        is exact.
+    \end{thm}
+    \begin{thm}
+        \textbf{Freyd-Mitchell Embedding Theorem.} If \(\mathcal{A}\) is a small abelian category, then there is a ring \(R\), and an exact fully faithful functor from \(\mathcal{A}\) into \(R\)-Mod. Such that for each \(M,N \in \text{Ob}(\mathcal{A})\)
         \begin{align*}
-            f_i - g_i &= -(g_i - f_i) = -(h_{i-1}\circ d_i + d_{i+1}' \circ h_i) = -h_{i-1}\circ d_i + -d_{i+1}' \circ h_i \\
-            &= -h_{i-1}\circ d_i + d_{i+1}' \circ -h_i
+            \homo_\mathcal{A}(M,N) \cong \homo_R(M,N)
         \end{align*}
-        The last line follows since \(d_{i+1}'\) is linear.
-        \item Suppose that \(f \sim g \sim r\), and let \(\mathbf{h, k}\) be respective witnesses of these homotopies. Then we have
-        \begin{align*}
-                &r_i - g_i = k_{i-1}\circ d_i + d_{i+1}'\circ k_i \\
-                &g_i - f_i = h_{i-1}\circ d_i + d_{i+1}'\circ h_i
-        \end{align*}
-        This furnishes
-        \begin{align*}
-            &r_i - f_i = k_{i-1}\circ d_i + d_{i+1}'\circ k_i + h_{i-1}\circ d_i + d_{i+1}'\circ h_i
-                       = (k_{i-1} + h_{i-1})\circ d_i + d_{i+1}'\circ(h_i + k_i)
-        \end{align*}
-        So we have the homotopy \(r \sim f\) via \(\mathbf{h} + \mathbf{k}\), we are done since we already proved symmetry.
-    \end{itemize}
+    \end{thm}
+    
 
-    \emph{exercise - } Represent diagrammatically what a homotopy of chain maps means
+    \subsubsection{Exercises}
 
-    \emph{proof - } Here we want \(\mathbf{h}\), so that
-    \begin{align*}
-        \cdots TODO \cdots
-    \end{align*}
+    --Environment-- If \(M\) is a manifold show that \(C^\infty(M)\) is a sheaf.
 
-    \emph{exercise - } Show that the following two chain complexes are homotopic:
-    \begin{equation*}
+    --Environment-- Check that when \(\mathcal{A}\) is abelian the category of left exact contravarient functors from \(\mathcal{A}\) to \textbf{abgp} is abelian c.f. \hyperref[yoneda rmk]{Yoneda  Embedding Remark.}
+
+    \subsection{Derived Functors}
+
+    \begin{defn}
+        A covarient 1. homological (2. cohomological) \(\mathbf{\delta}\)\textbf{-functor} from \(\mathcal{A}\) to \(\mathcal{C}\) is a collection of additive functors 1. \(T_n: \mathcal{A} \to \mathcal{C}\) (2. \(T^n: \mathcal{A} \to \mathcal{C}\)) along with for each short exact sequence
+        \begin{equation*}
+            \begin{tikzcd}
+                0 \arrow[r,"{}"]& A \arrow[r,"{}"] &B \arrow[r,"{}"] &C \arrow[r,"{}"] & 0
+            \end{tikzcd}
+        \end{equation*}
+        morphisms 1. \(\delta_n: T_n(C) \to T_{n-1}(A)\) (2. \(\delta^n: T^n(C) \to T^{n+1}(A)\)) such that \((i)\) for each short exact sequence there is an induced long exact sequence 
+        \begin{equation*}
+            1.
+            \begin{tikzcd}
+                \cdots T_{n+1}(C) \arrow[r,"{\delta_{n+1}}"] &T_n(A) \arrow[r,"{}"] &T_n(B) \arrow[r,"{}"] &T_n(C) \arrow[r,"{\delta_n}"] &T_{n-1}(A)\cdots
+            \end{tikzcd}
+        \end{equation*}
+        \begin{equation*}
+            (2.
+            \begin{tikzcd}
+                \cdots T^{n-1}(C) \arrow[r,"{\delta^{n-1}}"] &T^n(A) \arrow[r,"{}"] &T^n(B) \arrow[r,"{}"] &T^n(C) \arrow[r,"{\delta^n}"] &T^{n+1}(A)\cdots
+            \end{tikzcd})
+        \end{equation*}
+        And \(\delta\) commutes with morphisms of short exat sequences.
+    \end{defn}
+    \begin{rmk}
+        Homology is a homological \(\delta\)-functor from \(\text{Ch}_*(\mathcal{A})\) to \(\mathcal{A}\). Similarly, cohomology is a cohomological \(\delta\)-functor from \(\text{Ch}^*(\mathcal{A})\) to \(\mathcal{A}\)
+    \end{rmk}
+
+    \subsubsection{Exercises}
+
+    --Environment-- Show that \(\pi: A \to A/p\)
+
+    \subsection{Misc. Category Theory}
+    \subsubsection{Properties of Inverse Limits}
+    The \textbf{Universal Property} of the inverse limit \(X\) is that for any \(Y\) compatible with the inverse system \((X_i)_I\) we have a unique morphism \(u\) such that the following commutes.
+    \begin{equation*}\label{invuniv}
         \begin{tikzcd}
-            0 \arrow[r] & \mathbf{Z} \oplus \mathbf{Z} \arrow[r,"{(\cdot , 2\cdot)}"] & \mathbf{Z} \oplus \mathbf{Z} \arrow[r] & 0 \oplus \mathbf{Z}/(2) \arrow[r] & 0 \\
-            0 \arrow[r] & \mathbf{Z} \arrow[r,"2\cdot"] & \mathbf{Z} \arrow[r] & \mathbf{Z}/(2) \arrow[r] & 0
+            & Y \arrow[ldd, "\psi_j"'] \arrow[d, "u",dashed] \arrow[rdd, "\psi_i"] &     \\
+            & X \arrow[ld, "\pi_j"] \arrow[rd, "\pi_i"']                    &     \\
+            X_j \arrow[rr, "f_{ij}"'] &                                                               & X_i
         \end{tikzcd}
     \end{equation*}
-    
-    \emph{proof - } Let each \(f_i\) be the projection of the second coordinate, and each \(g_i\) the inclusion into the second coordinate. In thise case we have
-    \begin{align*}
-        \mathbf{1}_{C'} - \mathbf{fg} = \mathbf{0}
-    \end{align*}
-    and hence \(\mathbf{h} = (0)_i\) witnesses the homotopy. The slightly harder case is the other direction. Define \(h_2 = h_0 = h_{-1} = 0\), and \(h_1: (m,n) \mapsto m\). By definition of \(\mathbf{f}, \mathbf{g}\), we have \(1_{C,i} - g_if_i: (m,n) \mapsto (m,0)\), so we just need to check that our given \(\mathbf{h}\) satisfies this.
-    \begin{align*}
-        &(d_3h_2 + h_1d_2)(m,n) = 0 + h_1(m,2n) = (m,0) \\
-        &(d_2h_1 + h_0d_1)(m,n) = d_2(m,0) + 0 = (m,0) \\
-        &(d_1h_0 + h_{-1}d_0)(0,n) = 0 + 0 = (0,0)
-    \end{align*}
-    This verifies the homotopy.
+    \begin{rmk}
+        If the objects of an inverse system are Rings/Modules, and the maps are Ring/Module homomorphisms, then the inverse limit has a Ring/Module structure. Note that this same observation should hold for other mathematical structures.
+    \end{rmk}
+    \begin{prop}\label{nonemptyinvlimit}
+        If \((S_i,\pi_i)\) is an inverse system of finite non-empty sets, then \(\lim\limits_{\longleftarrow}S_i\) is nonempty.
+        \begin{proof}
+            Let \(F_{k,j},\; (k > j)\) be the image of \(S_k\to \cdots\to S_j\), since these are finite non-empty sets \(F_{k,j}\) is constant for sufficiently large \(k\). Letting \(E_j\) be this eventual image, then the \(E_j\) form an inverse system with \(E_{j+1} \to E_j\) surjective, hence we can choose some \(e_0\), then choose \(e_1\) in its preimage and so on to get an element of \(\lim\limits_{\longleftarrow}S_i\).
+        \end{proof}
+    \end{prop}
 
-    \textbf{CAUTION!! - } The connection (this is what we call the diagonal maps often denoted \(\mathbf{h}\)) diagram need to not commute.
 
-    \textbf{Theorem - } If chain complexes \(C,C'\) are homotopic, then they have the same Homology Modules.
-
-    \emph{proof - } Recall that
-    \begin{align*}
-        H^i := \frac{\ker(d_i)}{\im(d_{i+1})}
-    \end{align*}
-    Now let the homotopy be given by \(\mathbf{f}:C \to C', \mathbf{g}:C' \to C\), there is a natural induced map of \(f_i\) on \(H^i\), given by restricting \(f_i\) to \(\im(d_{i+1})\), then taking the unique map from the quotient by the kernel of \(d_i\), which exists and is unique by the first isomorphism theorem. Calling this induced map \(f_{i,*}\), we need to check that
-    \(f_{i,*}\) maps into \(H_i'\).
-
-    \section{Commutative Algebra}
-
-    \textbf{Hilbert's Basis Theorem - } if \(R\) is Noetherian, then \(R[X]\) is Noetherian
-    
-    \emph{proof.} Fix an ideal \(J\) of \(R[X]\), then \(J \cap \set{\deg = 0} \subset R\) is finitely generated. It is easy to verify by induction that
-    \(J \cap \set{\deg \leq m}\) is finitely generated for any \(m\). Let \[I = \set{b \vert f \in J \tand f = bx^n + a_{n-1}x^{n-1} + \cdots + a_0}\]
-    \(I \subset R\) is an ideal, thus is finitely generated, \(I = (b_i)_1^n\). Choose for each \(b_i\) some \(f_i\) where \(b_i\) is the leading coefficient.
-    Then letting \(m = \max\set{\deg_{1\leq i\leq n} f_i}\)it is easy to verify using polynomial division and induction that
-    \begin{align*}
-        J = (f_i)_1^n + J \cap \set{\deg \leq m}
-    \end{align*}
-    This proves \(J\) is finitely generated. \qed
-
-    \emph{It is easy to understand how someone could come up with this proof when we do it by first noticing that \(J \cap \set{\deg \leq m}\) is always finitely generated.
-    This motivates the clever choice of ideal of leading coefficients since we want to reduce the degree.}
-
-    \emph{exercise - } Prove that if \(R\) is Noetherian, and \(I \subset R\) is an ideal, then among the primes of \(R\) containing \(I\) there are only finitely many that are minimal with respect to inclusion.
-
-    \emph{proof - } Assume not, then let 
-    \[X = \set{I \subset R \mid \text{there are infinitely many minimal prime ideals containing } I}\]
-    any chain in \(X\) has a maximal element by the Noetherian assumption, so Zorn's lemma furnishes a maximal element \(J\). \(J \in X\) implies that \(J\) is not prime, since then it would be the unique minimal ideal, hence there exist \(f,g \not \in J\) such that \(fg \in J\), it follows that for any minimal prime ideal \(P\) containing \(J\), we have \(fg \in P \implies f \in P \tor g \in P\), so that \(P \in J + (f) \tor J + (g)\), hence one of the two must be contained in infinitely many minimal prime ideals contradicting minimality. \qed
-
-    \emph{exercise - }  Let \(M'\) be a submodule of \(M\). Show that \(M\) is Noetherian
-    iff both \(M'\) and \(M / M'\) are Noetherian.
-
-    \emph{proof - } If \(M\) is Noetherian, then so is \(M/M'\), since the image of the generators are generators. \(M'\) being Noetherian is just by passing chains in \(M'\) to the same chains in \(M\). Now suppose the converse, now let \(N_1 \subset N_2 \subset \cdots\) be a chain of submodules of \(M\), then there is some \(k'\), such that for all \(k \geq k'\) we have \(N_{k+1}/M' = N_k/M'\) and \(N_{k+1}\cap M' = N_k\cap M'\). Then let \(x \in N_{k+1}\), then there is some \(y \in N_k\) such that \(x-y \in M'\), hence
-    \[x - y =m \in M' \implies m \in (N_{k+1} + N_k)\cap M' = N_{k+1} \cap M' = N_k \cap M'\]
-    so \(x = y + m \in N_k\), hence \(N_{k+1} = N_k\). \qed
-
-    \emph{exercise - } Let \(R = R_0 \oplus R_1 \oplus \cdots\) be graded, TFAE.
-    \begin{enumerate}
-        \item \(R\) is Noetherian
-        \item \(R_0\) is Noetherian and \(R_1 \oplus R_2 \oplus \cdots\) is finitely generated
-        \item \(R_0\) is Noetherian and \(R\) is finitely generated as a \(k\)-algebra
-    \end{enumerate}
-
-    \emph{proof - } 1 implies 2 is obvious. To show 3 implies 1, we have from Hilberts basis theorem \(R_0[x_1,\hdots,x_n]\) is Noetherian, since a finite \(R_0\)-algebra is a quotient of this free algebra, and quotients of Noetherian modules are Noetherian we are done. For 2 implies 3, let \(\set{f_i}_1^N\) be generators for \(R_1 \oplus R_2 \oplus \cdots\), then for \(f \in R\), \(f = \sum g_i f_i\), \(g_i\) in grading of \(\text{grad} f - \text{grad} f_i\) , recursing this process on \(g_i\), we eventually get "coefficients" with degree \(0\), so the module generators are also \(R_0\) algebra generators. \qed
-
-    \emph{exercise - } Let \(R = k[x]\) show that every finitely generated \(R\)-module has a finite free resolution.
-
-    \emph{proof - } Use the structure theorem
-    \begin{equation*}
-        \begin{tikzcd}
-        0 \arrow[r] &k[x]^N \arrow[r] &k[x]^{r+N} \arrow[r]&  k[x]^r \bigoplus_1^N k[x]/p_i(x) \arrow[r] &0
-        \end{tikzcd}
-    \end{equation*}
-
-    \emph{exercise - } Let \(R = k[x]/(x^n)\), compute a free resolution of the \(R\)-module \(R/(x^m)\), for any \(m \leq n\). Show that the only \(R\)-modules with finite
-    free resolutions are the free modules. 
-
-    \subsection{Tensor Products}
-
-    \emph{Notes - }
-    \begin{itemize}
-        \item \((\cdot) \otimes N: \textbf{Mod}_\mathbf{R} \to \textbf{Mod}_\mathbf{R}\) is a right exact covarient functor.
-    \end{itemize}
-
-    \emph{exercise - } \(\mathbf{Z}/(10)\otimes \mathbf{Z}/(12) \simeq \mathbf{Z}/(2)\)
-
-    \emph{proof.} Define \(\varphi: \mathbf{Z}/(10)\otimes \mathbf{Z}/(12) \to \mathbf{Z}/(2), \; a\otimes b \mapsto ab\). This is a homomorphism (mult is bilinear) and its clearly onto.
-    To see the kernel is trivial, suppose \(a \otimes b \mapsto 0\), then \(a \otimes b = 2 (k \otimes \ell)\) by bilinearity. Then
-    \begin{align*}
-        2 (k \otimes \ell) = 2 (k \otimes 25\ell) = 50 (k \otimes \ell) = 5 (10k \otimes \ell) = 5(0 \otimes \ell) = \mathbf{0}
-    \end{align*}
-
-    \subsection{Localizations}
-
-    \emph{Definition - } \(S \subset R\) multiplicatively closed, then \(S^{-1}R\) has elements \(a/s\), where \(a_1/s_1 = a_2/s_2\) exactly when there exists some \(s \in S\), such that \(s(s_2a_1 - s_1a_2) = 0\)
-    We equip \(S^{-1}R\) withh the usual operations for fractions. This comes with the natural embedding
-    \begin{align*}
-        R \hookrightarrow S^{-1}R
-    \end{align*}
-
-    \emph{exercise - } \(R \hookrightarrow S^{-1}R\) is injective if and only if \(S\) does not contain zero divisors.
-
-    \emph{Proof - } Suppose that \(S\) contains zero divisor \(s\), then for some \(r \in R\), \(sr = 0\), hence \(r \mapsto r/1 = 0/1\) which is the image of zero. Conversely, assume \(S\) has no zero divisors, then for any \(s\),
-    \[s(a1 - r1) = 0 \iff a1 = r1 \iff a = \rho\]
-
-    \emph{Definition of Localization as a Universal Property -} \(S^{-1}R\) is initial among \(A\)-algebras \(B\), where \(S \hookrightarrow B^\times\) (Note an \(R\)-Algebra is just a ring containing \(R\) thats also an \(R\)-Module)
-    \begin{equation*}
-        \begin{tikzcd}
-            R \arrow[r, hook] \arrow[dr]
-            & S^{-1}R \arrow[d, dashed]
-            & S \to B^\times\\
-            & B
-        \end{tikzcd}
-    \end{equation*}
-
-    \emph{Definition of Localizations of Modules - } satisfies the same diagram as localizations of \(R\) (where we swap \(M\) for \(R\) and \(B\) for some arbitrary \(R\)-module \(N\)).
-    
-    \begin{itemize}
-        \item To show that a localization of an \(R\)-module exists we follow the exact same construction as for rings, but here we may relabel \(a \in R \leadsto m \in M\)
-    \end{itemize}
-
-    \emph{exercise - } Show that \(S^{-1}\left(\bigoplus_i M_i\right) = \bigoplus_i S^{-1}M_i\) but not necessarily for infinite direct products
-
-    Use the universal property. The explicit details of the proof are obvious (here we have \(1/s: a \mapsto b\), such that \(sb = a\)). To show it does not hold for direct products,
-    \begin{align*}
-        (1,1/2,1/3,\hdots) \in \prod_1^\infty \mathbf{Q} \setminus \mathbf{Q}\prod_1^\infty \mathbf{Z}
-    \end{align*}
-    Since any element of \(\mathbf{Q}\prod_1^\infty \mathbf{Z}\) has a "clearable denomenator"
 
     \newpage
-    \section{Category Theory}
+    \section{Algebraic Geometry}
+    \subsection{Prerequisites}
+    \begin{defn}
+        Define the \textbf{ideal quotient} (in a ring \(A\)), \((\mathfrak{a}:\mathfrak{b}) = \set{x \in A \mid x\mathfrak{b} \subset \mathfrak{a}}\).
+    \end{defn}
+    \subsubsection{Primary Decomposition}
+    \begin{defn}
+        \(I \subsetneq A\) is called primary if whenever \(xy \in I\) we have either \(x \in I\) or \(y^n \in I\) for some \(n\).
+    \end{defn}
+    \begin{rmk}
+        An equivalent definition is that \(I\) is primary when every zero divisor in \(A/I\) is nilpotent.
+    \end{rmk}
+    \begin{defn}
+        \(I \subset A\) is called irreducible if \(I = \mathfrak{a}\cap\mathfrak{b}\) implies \(I = \mathfrak{a} \tor I = \mathfrak{b}.\)
+    \end{defn}
+    \begin{prop}
+        If \(I\) is primary, then \(\sqrt{I}\) is prime. If \(\mathfrak{p} = \sqrt{I}\), then \(I\) is called \(\mathfrak{p}\)-primary.
+    \end{prop}
+    \begin{prop}
+        Finite intersections of \(\mathfrak{p}\)-primary ideals are \(\mathfrak{p}\)-primary.
+        \begin{proof}
+            \(\bigcap_1^n \sqrt{\mathfrak{p}_i} = \sqrt{\bigcap_1^n \mathfrak{p}_i}\).
+        \end{proof}
+    \end{prop}
+    \begin{prop}
+        If \(\mathfrak{q}\) is \(\mathfrak{p}\)-primary, then for \(x \not \in \mathfrak{q}\) we have \((\mathfrak{q}:x)\) is \(\mathfrak{p}\)-primary.
 
-    \emph{General notes and thoughts - }
-    \begin{itemize}
-        \item Contravarience is naturally present in a pullback.
-        \item A functor is right exact when for 
-        \[M' \to M \to M'' \to 0\]
-        an exact sequence (i.e. \(M'\) maps into the kernel of \(M \to M''\), \(M\) maps onto \(M''\)), then the sequence of induced maps is exact
-        \[F(M') \to F(M) \to F(M'') \to 0\]
-    \end{itemize}
+        \begin{proof}
+            \(yz \in (\mathfrak{q}:x)\), then \(xyz \in \mathfrak{q}\), if \(y \in \sqrt{\mathfrak{q}} \supset (\mathfrak{q}:x)\) we are done, otherwise \(xz \in \mathfrak{q}\), so that \(z \in (\mathfrak{q}:x)\).
+        \end{proof}
+    \end{prop}
+    \begin{defn}
+        A primary decomposition of an ideal \(\mathfrak{a}\) is an intersection of finitely many primary ideals \(\mathfrak{q}_i\), such that \(\mathfrak{a} = \bigcap_1^n \mathfrak{q}_i\).
+    \end{defn}
+    \subsubsection{Multiple Complex Variables}
+    \begin{thm}
+        \textbf{Cauchy's Integral Formula} If \(f\) is \(C^\infty\) on a closed disc \(D\), then \(f(z_0) = \int_{\partial D} \frac{f(z)}{z - z_0} dz + \int_D \frac{\frac{\partial f}{\partial \overline{z}}(z)}{z - z_0} dz \wedge d\overline{z} \)
+    \end{thm}
+    \begin{thm}
+        \textbf{Elliptic Regularity} Analytic complex functions are equal to their power series.
+        \begin{proof}
+            It will suffice to show that holomorphic functions are equal to their power series, let \(z_0\) be in our domain, and \(\gamma\) be a circle of radius \(r\) about \(p\) in our domain (with \(z_0\) in the interior of \(gamma\)), then by Cauchy's integral formula:
+            \begin{align*}
+                f(z_0) &= \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-z_0}dz = \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \frac{z-p}{z-p - (z_0 - p)}dz = \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \frac{1}{1 - \frac{z_0-p}{z-p}}dz \\
+                &= \frac{1}{2\pi i}\int_{\gamma} \frac{f(z)}{z-p} \sum_0^\infty \left(\frac{z_0-p}{z-p}\right)^n = \frac{1}{2\pi i}\int_{\gamma}\sum_0^\infty \frac{f(z)}{(z-p)^{n+1}}(z_0-p)^n
+            \end{align*}
+            Since \(f\) is continuous and \(\gamma\) is compact, we have that \(\sup_\gamma\abs{f} = M\), and it is immediate that \(\abs{z_0 - p} < r = \abs{z - p}\) for all \(z \in \gamma\). In particular this implies that the sum of functions is abslutely convergent. Swapping the sum and integral gives us
+            \begin{align*}
+                f(z_0) = \frac{1}{2\pi i} \sum_0^\infty (z - p)^n \int_\gamma \frac{f(z)}{(z - p)^{n+1}}dz
+            \end{align*}
+        \end{proof}
+    \end{thm}
+    \begin{thm}
+        \textbf{Poincare} \(\mathbf{\overline{\partial}}\) \textbf{Lemma} For any \(g \in C^\infty(D)\) we can solve for \(f\) defined on a slightly smaller disc, such that \(\frac{\partial f}{\overline{\partial} z} = g\).
+        \begin{proof}
+            I will just provide a sketch of the main ideas of this proof, it is written out in Griffiths and Harris.
+        \end{proof}
+    \end{thm}
+    \subsection{Honest AG}
+    \begin{rmk}
+        The starting point for algebraic geometry is studying the zero locus of a set of polynomials, \(V(\set{f_i(X_1,\hdots,X_n)}_{i \in I}) \subset k^n\). The approach in this subject is to study the ring of functions \(V \to k\), obtained by restriction of functions on \(k^n\) to functions on \(V\).
+    \end{rmk}
+    \begin{rmk}
+        I am taking these notes shortly after concluding a course on commutative algebra, as such I will be skipping over the going up theorem, Hilbert's Nullstellensatz, etc. Some definitions such as that of a variety, closed algebraic set, etc. I will go over again as to establish a convention.
+    \end{rmk}
+    \begin{defn}
+        A \textbf{closed algebraic set} is a set of the form \(V(I)\), where \(I \subset k[X_1,\hdots,X_n]\).
+    \end{defn}
+    \begin{defn}
+        A closed algebraic set is \textbf{irreducible} if it cannot be written as the union of two strictly smaller algebraic sets.
+    \end{defn}
+    \subsection{Arithmetic Geometry}
+    \begin{defn}
+        An \textbf{absolute value} on a field \(k\) is a function \(\abs{\cdot}: k \to \mathbb{R}_{\geq 0}\) satisfying
+        \begin{enumerate}
+            \item Positive definiteness.
+            \item \(\abs{xy} = \abs{x}\cdot\abs{y}\)
+            \item \(\abs{\cdot}\) satisfies the triangle inequality.
+        \end{enumerate}
+    \end{defn}
+    \begin{rmk}
+        When \(k = \mathbb{Q}\) the euclidean absolute value \(\abs{\cdot}\) is often denoted as \(\abs{\cdot}_\infty\).
+    \end{rmk}
+    \begin{defn}
+        Two absolute values \(\abs{\cdot}\) and \(\abs{\cdot}'\) on a field \(k\) are \textbf{equivalent} when there is some \(\alpha \in \mathbb{R}_{>0}\), such that for any \(x \in k\) we have \(\abs{x}^\alpha = \abs{x}'\).
+    \end{defn}
+    \begin{thm}
+        \textbf{Ostrowski's classification theorem} Every nontrivial absolute value on \(\mathbb{Q}\) is equivalent to \(\abs{}_p\) for some \(p \in \text{Primes}\cup\set{\infty}\)
+    \end{thm}
+    \begin{defn}
+        \(\mathbb{Z}_p := \lim\limits_{\longleftarrow} \mathbb{Z}/(p^n)\)
+    \end{defn}
+    \begin{prop}
+        \(\mathbb{Z}_p^\times = \mathbb{Z}_p \setminus p \mathbb{Z}_p\)
+        \begin{proof}
+            One direction is obvious, for the other direction if \((a_1,a_2,\hdots)\) is invertible, then note that inverses behave well with respect to projection, so that \((a_1^{-1},a_2^{-1},\hdots) \in \mathbb{Z}_p\).
+        \end{proof}
+    \end{prop}
+    \begin{rmk}
+        It is an important observation that any \(a \in \mathbb{Z}_p \setminus \set{0}\) can be uniquely in the form \(p^nu\) for \(u \in \mathbb{Z}_p^\times\). 
+    \end{rmk}
+    \begin{defn}
+        \(\mathbb{Q}_p := \text{Frac}\,\mathbb{Z}_p\). I.e. the field of fractions of \(\mathbb{Z}_p\).
+    \end{defn}
+    \begin{defn}
+        The \textbf{p-adic valuation} \(v_p: \mathbb{Q}_p \to \mathbb{Z}\cup\set{\infty}\) is defined via \(p^nu \mapsto n\) (where \(u \in \mathbb{Z}_p^\times\)) and \(0 \mapsto \infty\).
+    \end{defn}
+    \begin{defn}
+        The \textbf{p-adic absolute value} \(\abs{\cdot}_p : \mathbb{Q}_p \to \mathbb{R}\) via \(\abs{x}_p := p^{-v_p(x)}\).
+    \end{defn}
+    \begin{thm}
+        \(\mathbb{Q}_p\) is the completion of \(\mathbb{Q}\) with respect to \(\abs{\cdot}_p\). Note here that there is a natural inclusion \(\mathbb{Q} \hookrightarrow \mathbb{Q}_p\).
+        \begin{proof}
+            Let \((a_n)\) be a cauchy sequence in \(\mathbb{Q}_p\), since it is bounded, we may multiply by \(p^k\) for some \(k\) and consider a sequence in \(\mathbb{Z}_p\). Denote \((a_n) = S_0\), then for each \(n \in \mathbb{Z}_{>0}\) there is some subsequence \(S_n \subset S_{n-1}\) such that \(S_n\) is constant in \(\mathbb{Z}/(p^n)\), choose a diagonal sequence then this forms a convergent subsequence of the cauchy sequence \(S_0 = (a_n)\). This implies that \(\mathbb{Q}_p\) is complete.
 
-    \emph{Categorical definition of a product -} Here \(P\) is the product of \(X,Y\), note that \(P\) is determined up to unique isomorphism.
+            If \(a\) is in \(\mathbb{Q}_p\), then there is a sequence in \(\mathbb{Q}\) that converges to it, to see this we can first consider \(a= (a_1,a_2,\hdots) \in \mathbb{Z}_p\) by clearing its denomenator, so that \(a_1,a_2,\hdots\) is a convergent \(\mathbb{Q}\)-valued sequence.
+        \end{proof}
+    \end{thm}
+    \begin{prop}
+        Let \(f \in \mathbb{Z}_p[X]\), then \(f\) has a root in \(\mathbb{Z}_p\) if and only if \(f\) has a root in \(\mathbb{Z}/(p^n)\) for each \(n\).
+        \begin{proof}
+            One direction is obvious, in the other direction the solution sets are finite and non-empty, thus a categorical \hyperref[nonemptyinvlimit]{result} completes the proof.
+        \end{proof}
+    \end{prop}
+    \begin{thm}\label{hensel}
+        \textbf{Hensel's lemma} Let \(f \in \mathbb{Z}_p[X]\) and \(\alpha \in \mathbb{Z}/(p)\) such that \(f(\alpha) = 0 + (p)\) and \(f'(\alpha) \neq 0 + (p)\), then \(\alpha\) lifts to a unique root in \(\mathbb{Z}_p\).
 
-    \begin{equation*}
-        \begin{tikzcd}[row sep=1cm]
-            &A\arrow[ddl,"f_1"']\arrow[ddr,"f_2"]\arrow[d,dotted,"\bar{f}" description]\\
-            &P\arrow[dl,"p_1"]\arrow[dr,"p_2"']\\
-            X&&Y
-          \end{tikzcd}
-    \end{equation*}
+        \begin{proof}
+            This is an elementary proof using p-adic Newton's method.
+        \end{proof}
+    \end{thm}
+    The following definitions and results serve to establish the structure of the groups \(\mathbb{Z}_p^\times\) and \(\mathbb{Q}_p^\times\).
+    \begin{defn}
+        \(\mu_{p-1} := \set{x \in \mathbb{Z}_p \mid x^{p-1} = 1}\), note that this is a group under multiplication.
+    \end{defn}
+    \begin{defn}
+        \(U_n := 1 + p^n \mathbb{Z}_p\)
+    \end{defn}
+    \begin{prop}
+        \(\mathbb{Z}_p^\times = U_1 \times \mu_{p-1}\)
+        \begin{proof}
+            \(U_1 \cap \mu_{p-1} = \set{1}\) since by hensels lemma there is a unique solution to \(x^{p-1} = 1\) in mod \(p\). Then notice that \(\mathbb{Z}_p^\times = U_1\cdot \mu_{p-1}\), since we can divide any unit by an element of \(\mu_{p-1}\) to get an element of \(U_1\).
+        \end{proof}
+    \end{prop}
+    \begin{thm}
+        \(\mathbb{Z}_2^\times \cong \mathbb{Z}/(2) \times \mathbb{Z}_2\) and for \(p \neq 2\), \(\mathbb{Z}_p^\times \cong \mathbb{Z}/(p-1)\times \mathbb{Z}_p\)
+        \begin{proof}
+            First note that by the binomial theorem, if \(x \in U_{n-1} \setminus U_n\), then \(x^p \in U_n \setminus U_{n-1}\), we also have that \(U_1/U_{n+1} \cong \mathbb{Z}/(p^n)\), by considering \(x \mapsto x^p\) and \(n \mapsto pn\) respectively we get isomorphic inverse systems:
+            \begin{equation*}
+                \begin{tikzcd}
+                    \cdots \arrow[r,"{}"] & \mathbb{Z}/(p^n) \arrow[r,"{}"] \arrow[d,"{}"] &\mathbb{Z}/(p^{n-1}) \arrow[r,"{}"] \arrow[d,"{}"]&\cdots \\
+                    \cdots \arrow[r,"{}"] &U_1/U_{n+1} \arrow[r,"{}"] &U_1/U_n \arrow[r,"{}"] &\cdots
+                \end{tikzcd}
+            \end{equation*}
+            By taking inverse limits, we get \(\mathbb{Z}_p \cong U_1\).
 
-    \emph{Jargon - } A (covarient) functor is called faithful when for all \(A,B\), \(\mor(A,B) \to \mor(F(A),F(B))\) is injective, and full if it is surjective.
-    An example of a full subcategory (under the inclusion map) is finitely generated \(R\)-Modules as a subcategory of \(R\)-Modules.
+            In the case \(p = 2\), by taking the generator \(1 + 4\) for \(U_2\) we can repeat the inverse limit argument, then \(U_1/U_2 \cong \mathbb{Z}/(2)\).
+        \end{proof}
+    \end{thm}
+    \begin{thm}
+        \[\mathbb{Q}_2^\times \cong \mathbb{Z}\times \mathbb{Z}/(2) \times \mathbb{Z}_2 \tand \mathbb{Q}_p^\times \cong \mathbb{Z} \times \mathbb{Z}/(p-1)\times \mathbb{Z}_p, \; p\neq 2\]
+        \begin{proof}
+            \(\mathbb{Z}\times \mathbb{Z}_p^\times \cong \mathbb{Q}_p^\times\) via \((n,x) \mapsto p^nx\).
+        \end{proof}
+    \end{thm}
+    \begin{thm}
+        \(2^nu\) is square in \(\mathbb{Q}_2^\times\) if and only if \(n\) is even and \(u \equiv 1 \;\text{mod}\,8\). Similarly, \(p^nu\) is square if and only if \(n\) is even and \(u\) is square in \(F_p^\times \cong \mathbb{Z}/(p-1)\).
+        \begin{proof}
+            \(p = 2\): \(\mathbb{Q}_2^{\times 2}\) corresponds under the isomorphism to \(2 \mathbb{Z} \times 2 \mathbb{Z}_2\), where \(2 \mathbb{Z}_2\) is the image of \(U_3\).
 
-    \emph{exercise - } Initial objects are universal. 
-    
-    \emph{proof.} Suppose that \(A, B\) are two initial objects. There exist unique maps between them, when com posed these are maps from the oobjects to themselves, any map from the object to itself must be the identity by uniqueness of maps into an initial object, hence isomorphic. Uniqueness of this isomorphism follows by definition of initial object. \emph{The proof to show final objects are universal is nearly identical}.
+            \(p \neq 2\): Use the same correspondence, but \(2 \mathbb{Z}_p = \mathbb{Z}_p\), and \(2 \mathbb{Z}/(p-1)\) corresponds to \(F_p^{\times2}\), so \(\mathbb{Q}_p^{\times2}\) corresponds under the isomorphism to \(2 \mathbb{Z} \times F_p^{\times2} \times \mathbb{Z}_p\).
+        \end{proof}
+    \end{thm}
+    \begin{defn}
+        If \(G\) is a group, and \(I\) is the poset of normal subgroups having finite index ordered by reverse inclusion, then for \(K \subset N\) we get the quotient homomorphism \(G/K \to G/N\). The profinite completionof \(G\) is defined as \(\hat{G} := \lim\limits_{\longleftarrow N} G/N\).
+    \end{defn}
+    \begin{rmk}
+        In the case \(G = \mathbb{Z}\) the ordering is equivalent to divisibility.
+    \end{rmk}
+    \begin{defn}\label{profinitegp}
+        A \textbf{profinite group} is the inverse limit of finite groups.
+    \end{defn}
+    \begin{prop}
+        \(\hat{\mathbb{Z}} \cong \prod_{\text{Primes}} \mathbb{Z}_p\)
+        \begin{proof}
+            \begin{align*}
+                \mathbb{Z}/(n) \cong \prod_{\text{Primes}} \mathbb{Z}/p^{v_p(n)}
+            \end{align*}
+            Now take the inverse limit of both sides.
+        \end{proof}
+    \end{prop}
+    \begin{defn}
+        The \textbf{profinite topology} on a profinite group \(G = \invlim G_i\) is defined by giving each \(G_i\) the discrete topology, then giving \(G\) the subspace topology of \(\prod_i G_i\) (since \(G\) has projections \(\pi_i\) onto each \(G_i\)).
+    \end{defn}
+    \begin{prop}
+        The \textbf{profinite topology} is compact.
+        \begin{proof}
+            Each \(G_i\) with the discrete topology is compact, since they are finite. Furthermore, by Tychonoff's theorem \(\prod_i G_i\) is compact. Then define \(F_{ij} := \set{(x_k)_I \mid \varphi(x_j) = x_i}\) since each \(\varphi_{ij}\) is continuous (trivial!) \(F_{ij}\) is in the preimage of the diagonal on \(X_j \times X_i\) which is a closed set, hence \(F_{ij}\) is closed. It follows that \(\invlim G_i = \bigcap_{i \leq j} F_{ij}\) is a closed subset of a compact set, hence compact.
+        \end{proof}
+    \end{prop}
+    \begin{defn}
+        An \textbf{open subgroup} of a profinite group is a subgroup of the form \(\pi_i^{-1}(H_i)\), where \(\pi_i: \hat{G} \to G_i\), and \(H_i\) is a subgroup of \(G_i\).
+    \end{defn}
+    \begin{defn}
+        A \textbf{closed subgroup} \(H\) of a profinite group is given by taking \(H_i, H_j\) compatible with \(\varphi_{ij}\) for all \(i,j \in I\) and taking \(H := \invlim H_i\).
+    \end{defn}
+    \begin{rmk}
+        Open subgroups of a profinite group are the closed subgroups of finite index.
+    \end{rmk}
+    \begin{eg}
+        The open subgroups of \(\mathbb{Z}_p\) are all of the form \(p^d \mathbb{Z}_p\), and the closed subgroups are the open subgroups together with \(\set{0}\).
+    \end{eg}
+    \begin{prop}\label{galoisinv}
+        Let \(E/k\) be Galois, and let \(I\) be the poset of finite Galois extensions \(F\) such that \(k \subset F \subset E\). Then
+        \begin{align*}
+            \gal(E/k) \cong \invlim \gal(F/k)
+        \end{align*}
+        \begin{proof}
+            We can take \(\sigma \mapsto (\sigma\vert_F)_I\), these maps are compatible by definition, so by the \hyperref[invuniv]{universal property} this defines a map into the inverse limit. Furthermore, any compatible system defines an automorphism on \(E/k\), which provides an inverse for this map.
+        \end{proof}
+    \end{prop}
+    \begin{rmk}
+        By the \hyperref[galoisinv]{previous proposition}, every Galois group is a \hyperref[profinitegp]{profinite group}.
+    \end{rmk}
+    \begin{eg}
+        Recall that finite extensions of finite fields correspond to splitting fields of the polynomials \(x^q - x\). And that \(\text{Aut}(F_{p^n}/F_p) \cong \mathbb{Z}/(n)\) is cyclic and generated by the Frobenius automorphism. It follows that:
+        \begin{align*}
+            \gal(\overline{F_p}/F_p) \cong \hat{\mathbb{Z}}
+        \end{align*}
+    \end{eg}
+    \begin{defn}
+        \(k^{\text{ab}} \subset \overline{k}\) is defined as the field generated by all the finite abelian extensions of \(k\).
+    \end{defn}
+    \begin{thm}
+        \textbf{Kroneker-Weber} \(\mathbb{Q}^{\text{ab}} = \bigcup_1^\infty \mathbb{Q}(\zeta_n)\)
+    \end{thm}
+    \begin{prop}
+        \begin{align*}
+            \gal(\mathbb{Q}^{\text{ab}}/\mathbb{Q}) \cong \prod_{\text{Primes}} \mathbb{Z}_p^\times
+        \end{align*}
+        \begin{proof}
+            \begin{align*}
+                \gal(\mathbb{Q}^{\text{ab}}/\mathbb{Q}) \cong \invlim \left(\mathbb{Z}/(n)\right)^\times \cong \hat{\mathbb{Z}}^\times \cong \prod_{\text{Primes}} \mathbb{Z}_p^\times
+            \end{align*}
+            To jusify the second isomorphism, take the inverse limit as a ring, then the additive/multiplicative structure is still compatible with that of the additive/multiplicative group so we can specialize after taking the limit.
+        \end{proof}
+    \end{prop}
 
-    \emph{example - } Initial and final objects in \textbf{Set}, \textbf{Ring}, \textbf{Top}
 
-    \begin{itemize}
-        \item In \textbf{Set} and \textbf{Top} singletons are final.
-        \item In \textbf{Ring}, \(0\) is initial and final.
-    \end{itemize}
+    \subsubsection{Exercises}
+    \begin{exe}\label{dedekindfiniteprimes}
+        Show that a Dedekind domain with finitely many prime ideals is a PID.
+        \begin{proof}
+            Let \(\mathfrak{p}_1,\hdots,\mathfrak{p}_n\) be the prime ideals, then since they are maximal, they are coprime, let \(y_i \in \mathfrak{p}_i\setminus\mathfrak{p}_i^2\), then by the chinese remainder theorem there is some \(x_i\) such that \(x_i = y_i + \mathfrak{p}_i\), and \(x_i = 1 + \mathfrak{p}_j, \; j \neq i\). Then \((x_i)\) factors as a product \(\prod_1^n \mathfrak{p_i}^{e_i}\), it follows that \((x_i) = \mathfrak{p}_i\) is principle, all other ideals are products of principle ideals hence principle.
+        \end{proof}
+    \end{exe}
+    \begin{exe}\label{dedekindquot}
+        Let \(\mathcal{O}\) be a Dedekind domain, and \(\mathfrak{a} \subset \mathcal{O}\) an ideal. Show that \(\mathcal{O}/\mathfrak{a}\) is a PID.
+        \begin{proof}
+            Firstly, the properties of all prime ideals being maximal \(\mathfrak{a}\) admits a prime factorization \(\prod_1^r \mathfrak{p}_i^{e_i}\), by the correspondence theorem the prime ideals of \(\mathcal{O}/\mathfrak{a}\) are exactly the images of the prime ideals containing \(\mathfrak{a}\) via the quotient, thus \(\mathcal{O}/\mathfrak{a}\) has prime ideals \(\mathfrak{p}_1,\hdots,\mathfrak{p}_r\), the \hyperref[dedekindfiniteprimes]{previous argument} can still be applied, since any factors of the \((x_i)\) given by some prime ideal \(\mathfrak{q} \not \in \set{\mathfrak{p}_1,\hdots,\mathfrak{p}_r}\) get sent to the ideal \(1 + \mathfrak{a}\) in the quotient, so that each \(\mathfrak{p_i} + \mathfrak{a} = (x_i) + \mathfrak{a}\) is principally generated. It follows that each ideal in \(\mathcal{O}/\mathfrak{a}\) is a product of principle ideals hence principle.
+        \end{proof}
+    \end{exe}
+    \begin{exe}
+        Show that every ideal of a  Dedekind domain \(\mathcal{O}\) is generated by two elements.
+        \begin{proof}
+            Let \(\mathfrak{a} \subset \mathcal{O}\), let \(x \in \mathfrak{a}\), then \(\mathcal{O}/(x)\) is a PID by the \hyperref[dedekindquot]{previous exercise}, it follows that \(\mathfrak{a} + (x) = (y) + (x)\), so that \(\mathfrak{a} = (x,y)\).
+        \end{proof}
+    \end{exe}
+    \begin{exe}
+        Show that if \(A\) is a Noetherian ring where every prime ideal is maximal, then \(A\) is Artinian.
+        \begin{proof}
+           First, note that \(0\) is not prime since it is not maximal. Assume for contradiction that not all ideals of \(A\) contain a finite product of prime ideals, and let \(\mathfrak{a}\) be maximal with respect to this property. Tautologically, \(\mathfrak{a}\) cannot be prime, so let \(xy \in \mathfrak{a}\), but \(x,y \not \in \mathfrak{a}\). It follows that \((\mathfrak{a} + x)(\mathfrak{a} + y) \subset \mathfrak{a}\), and by the maximality assumption both contain products of prime ideals, hence as does \(\mathfrak{a}\) a contradiction. So all ideals of \(A\), including zero contain a finite product of prime ideals.
 
-    \emph{Definition of fibered product - } The following is the definition of the fibered product \((P,h,g) = X \times_Z Y\)
-    \begin{equation*}
-        \begin{tikzcd}
-            Q
-            \arrow[bend left]{drr}{q_2}
-            \arrow[bend right,swap]{ddr}{q_1}
-            \arrow[dashed]{dr}[description]{\exists ! f} & & \\
-            & P \arrow{r}{p_2} \arrow{d}[swap]{p_1}
-            & Y \arrow{d}{g} \\
-            & X \arrow[swap]{r}{h}
-            & Z
-            \end{tikzcd}
-    \end{equation*}
+           Consider the descending chain of \(A\) modules \[A \supset \mathfrak{p}_1 \supset \mathfrak{p}_1\mathfrak{p}_2 \supset \cdots \supset \mathfrak{p}_1 \cdots \mathfrak{p}_r = 0\]
+           It is immediate that each of the \(A\)-modules
+           \begin{align*}
+            A/\mathfrak{p}_1, \; \mathfrak{p}_1/\mathfrak{p}_1\mathfrak{p}_2, \; \hdots, \; \mathfrak{p}_1\mathfrak{p}_2\cdots\mathfrak{p}_{r-1}/\mathfrak{p}_1\mathfrak{p}_2\cdots\mathfrak{p}_r = \mathfrak{p}_1\mathfrak{p}_2\cdots\mathfrak{p}_{r-1}
+           \end{align*}
+           is equivalent to an \(A/\mathfrak{p_i}\) (where \(i\) is the largest index of the primes in the denomenator) vectorspace \(V_i\). The Noetherian condition implies that each of these vectorspaces must be finite dimensional, which suffices to prove the Artinian condition by allowing for the construction of a composition series via adding a \(\dim V_i - 1, \dim V_i - 2, \hdots, 1\) dimensional subspaces to the descending series at each step, since any intermediary module will be a \(A/\mathfrak{p}_i\) vectorspace this constitutes a composition series. The length of a composition series is an upper bound for the length of any descending chain by taking common refinements and the Jordan-Holder theorem, hence any descending chain has length at most \(\sum_1^r \dim V_i\) and \(A\) is Artinian.
+        \end{proof}
+    \end{exe}
+    \begin{exe}
+        Let \(X \subset \mathbb{A}^2\) be the algebraic curve defined by the equation \(y^2 = x^3\), and \(f: \mathbb{A}^1 \to X\) be the regular mapping defined via \(t \mapsto (t^3,t^2)\). Then \(f\) is not an isomorphism.
+        \begin{proof}
+            Suppose for contradiction that \(f\) is an isomorphism, then we have some \(g\), such that \(gf = 1_{\mathbb{A}^1}\), by the quotient structure we have that \(g = P(x) + Q(x)y\), so that \(g\circ f(t) = P(t^2) + Q(t^2)t^3 = t\), but it is immediate by degree considerations that this is impossible.
+        \end{proof}
+    \end{exe}
+    \begin{exe}
+        Let \(X\) be the curve defined by \(y^2 = x^2 + x^3\), then \(f: \mathbb{A}^1 \to X\) via \(t \mapsto (t^2 - 1,t(t^2 - 1))\). Show that \(f^*\) is an isomorphism onto the subring \(k[t]\cap \set{g(1) = g(-1)}\).
+        \begin{proof}
+            first note that \(f^*\) is surjective, since \(\set{g(1) = g(-1)} = k[t^2 - 1, t^3 - t]\). Now to check that \(f\) is injective, first note that \(y^2 - x^2 - x^3\) is irreducible, so that \(k[X]\) is a domain, we can define a map from \(\text{Frac}\,k[X] \to k(t)\) via the same rule as \(f^*\)
+        \end{proof}
+    \end{exe}
+
+
+    \newpage
+    \section{Cryptography}
+    \subsection{Computational Complexity}
+        \begin{rmk}
+            Solving \(x^2 = y + (n)\) for arbitrary \(n\) is equivalent to integer factorization.
+        \end{rmk}
+        \begin{rmk}
+            The Euclidean algorithm has runtime \(\mathcal{O}(\log n)\), same for finding the coefficients guaranteed by Bezout's identity. The significance of this is that when additional information about the variables is known \(\gcd\) can be used as an efficient route to deal with factorization problems.
+        \end{rmk}
+        \begin{rmk}
+            \emph{Encryption as an algebraic expression:} The term "confusion" (Shannon 1945) was coined to express the degree of complexity separating a cypher text and key. For example, a Caeser cypher has weak or linear confusion, being \(\text{cypher} = \text{key} + \text{plaintext}\). In general substitution steps performed in cypher's aim to maximize their algebraic complexity, (or ability to be approximated linealry).
+        \end{rmk}
+    \subsection{Encryption methods}
+    \subsubsection{RSA Cryptography}
+    The RSA encryption scheme is as follows:
+    \begin{enumerate}
+        \item Choose large random prime numbers \(p,q\) and define \(n = pq\)
+        \item Compute \(\lambda(n) = [\phi(p),\phi(q)] = [p-1,q-1]\) (here \(\lambda\) is the Carmichael totient, i.e. the smallest \(n\) such that for any \(a\) coprime to \(n\) we have \(a^n = 1 + (n)\)). Furthermore this is efficient since we have efficient algorithm for gcd and \([p,q] = \frac{pq}{(p,q)}\).
+        \item Take \(1 < e < \lambda(n)\) with \((e,\lambda(n)) = 1\), \(e\) is commonly taken to be \(2^{16} + 1\).
+        \item Compute the key \(d = e^{-1}\; \text{mod}\,\lambda(n)\)
+        \item The public key is then the tuple \((n,e)\), and encryption is given via \(m \mapsto m^e\;\text{mod}\,n\), this can easily be decrytped by the private key \((n,d)\) as we can simply compute \(s \mapsto s^d \;\text{mod}\,n\), where \(m^{de} \equiv m\).
+    \end{enumerate}
+    \begin{rmk}
+        Keys with lesser hamming weight can be encrypted much more efficiently due to the repeated squaring operation for computing exponents.
+    \end{rmk}
+
+    \subsubsection{Symmetric Cryptography (AES)}
+    \subsection{Elementary Number Theoretic Tools}
+    \begin{thm}
+        Consider the integer \(n\) with prime factorization \(n = 2^dp_1^{d_1}\cdots p_k^{d_k}\) and \((m,n) = 1\), then
+        \begin{align*}
+            x^2 \equiv a \text{ mod}\,n
+        \end{align*}
+        exactly when both of the following are satisfied
+        \begin{enumerate}
+            \item \(a^{\frac{p_i - 1}{2}} \equiv 1 \text{ mod}\,p_i\) for all \(i\)
+            \item \(a \equiv 1 \text{ mod}\,4\) for \(d \in \set{1,2}\)
+            \item \(a \equiv 1 \text{ mod}\,8\) for \(d \geq 3\)
+        \end{enumerate}
+    \end{thm}
+    \subsection{Prime Factorization}
+    \begin{defn}
+        A number \(n\) is called \(p\) smooth when for any prime factor \(q\) of \(n\) we have \(q \leq p\).
+    \end{defn}
+    \begin{thm}
+        The \textbf{AKS primality test} is a polynomial time algorithm (although not practical) for determining whether or not a number is prime. In the next step, we want to find 
+    \end{thm}
+    \begin{thm}
+        The \textbf{Quadratic Sieve} algorithm can factor an integer \(n\) in time complexity \newline \(\mathcal{O}(\exp((\log n)^{1/2}(\log\log n)^{1/2}))\).
+    \end{thm}
+    For the quadratic sieve method, we first come up with a smoothness bound (the "standard" choice is \(Y = \exp(\sqrt{\log n \log\log n})\))
+    \begin{thm}
+        The \textbf{General Number Field Sieve (GNFS)} can factor an integer \(n\) in time complexity \(\mathcal{O}(\exp((\log n)^{1/3}(\log\log n)^{2/3}))\).
+    \end{thm}
+
 \end{document}
